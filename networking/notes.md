@@ -1,0 +1,39 @@
+# System calls
+* System call allows a user program to ask for an OS service.
+* Kernel handles all interrupts but needs to maintain isolation of user processes and the kernel.
+* Upon an interrupt, system must save all processor registers.
+* xv6 and conventional unix terminology for interrupts is called 'traps'. Traps are caused by processors and interrupts called by devices.
+
+## Protection
+* Four protection levels 0 (most privilege) to 3 (least privilege)
+* In practice, only 0 (kernel mode) and 3 (user mode) used by most OSs
+* Privilege level stored in %cs register in CPL (current protection level & DPL is descriptor privilege level) field
+* xv6 has interrupt descriptor table, each entry has %cs and %eip to be used
+
+# Drivers
+* Early PC motherboards had a programmable interrupt controller (PIC) - look at piciqr.c
+* Each PIC handles 8 devices, PICs can be cascaded to handle more than 8
+* ideinit in ide.c shows a good way of starting the IDE driver
+  * Need to call picenable (for single processor) and ioapicenable (for multiprocessor) to enable the IRQ interrupt
+* After enabling interrupts, need to probe the hardware
+
+# Code notes
+* Need to add ethernet to the devsw array, this seems to add it to something that allows the fs to read and write from the device as if it were a unix file
+* Probe to find the address the device is attached to and then init afterwards
+
+# Useful references
+* https://github.com/s-shin/xv6-network - Driver for the NE2000 (documented mainly in Japanese) and somewhat integrated into the xv6 system
+* https://github.com/phulin/xv6-lwip-capabilities - Builds on the NE2000 driver and adds the lwIP library as a TCP/IP stack
+* http://www.ti.com/general/docs/lit/getliterature.tsp?genericPartNumber=dp8390d&fileType=pdf - The NE2000 is a standard that several implementors follow - National Semiconductors (acquired by TI) produced the initial prototype design that the NE2000 is based on and this document is a good description of the initial standard and has explanation around how to interface with the card. Necessary for writing drivers for the card.
+* http://wiki.osdev.org/Ne2000 - Information about writing drivers for the NE2000
+* http://www.osdever.net/documents/WritingDriversForTheDP8390.pdf - More information about writing NE2000 drivers
+* http://wiki.osdev.org/Network_Stack - High level information about implementing a network stack, from drivers to higher level protocols
+* http://savannah.nongnu.org/projects/lwip/ - LwIP provides a TCP/IP stack, providing (among others) TCPIP, UDP, TCP, DNS, DHCP, ARP
+* http://lwip.wikia.com/wiki/LwIP_Wiki - LwIP information and guides about using the library
+* http://antoinealb.net/programming/2013/12/06/lwip-ucos2.html - Article about porting LWiP for a platform, including writing a custom sys_arch.c
+
+# Steps
+1. Write NE2000 driver code for probing and initialising 
+2. Write driver code for sending and receiving packets
+3. Write xv6 sys_arch.c (and cc.h etc) for lwip
+4. Write projecthif.c?
