@@ -33,7 +33,18 @@
 * http://antoinealb.net/programming/2013/12/06/lwip-ucos2.html - Article about porting LWiP for a platform, including writing a custom sys_arch.c
 
 # Steps
-1. Write NE2000 driver code for probing and initialising 
-2. Write driver code for sending and receiving packets
-3. Write xv6 sys_arch.c (and cc.h etc) for lwip
-4. Write projecthif.c?
+A rough plan of how to proceed
+
+## Adding an ethernet interface  
+1. Write NE2000 driver code for probing and initialising (look at disk.c for how to read/write from registers)
+2. Integrate the driver code into xv6
+  1. Add ethernet code to trap.c for handling ethernet interrupts
+  2. Init the eth file descriptor (init.c) and define the file descriptor number (file.h)
+  3. Dubious that the ioctl functionality needs to be implemented - this only seems to be necessary for be able to issue extra commands. Need to check this.
+3. Test to make sure the mac address can come from the card
+4. Write driver code for sending and receiving packets
+5. Should hopefully be able to make a DHCP request and get an IP address back now by manually constructing an ethernet packet
+
+## Adding lwip
+1. Write xv6 sys_arch.c (and cc.h etc) for lwip
+2. Write projecthif.c?
