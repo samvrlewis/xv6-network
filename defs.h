@@ -8,22 +8,22 @@ struct rtcdate;
 struct spinlock;
 struct stat;
 struct superblock;
-
+ 
 // bio.c
 void            binit(void);
 struct buf*     bread(uint, uint);
 void            brelse(struct buf*);
 void            bwrite(struct buf*);
-
+ 
 // console.c
 void            consoleinit(void);
 void            cprintf(char*, ...);
 void            consoleintr(int(*)(void));
 void            panic(char*) __attribute__((noreturn));
-
+ 
 // exec.c
 int             exec(char*, char**);
-
+ 
 // file.c
 struct file*    filealloc(void);
 void            fileclose(struct file*);
@@ -32,7 +32,7 @@ void            fileinit(void);
 int             fileread(struct file*, char*, int n);
 int             filestat(struct file*, struct stat*);
 int             filewrite(struct file*, char*, int n);
-
+ 
 // fs.c
 void            readsb(int dev, struct superblock *sb);
 int             dirlink(struct inode*, char*, uint);
@@ -51,26 +51,26 @@ struct inode*   nameiparent(char*, char*);
 int             readi(struct inode*, char*, uint, uint);
 void            stati(struct inode*, struct stat*);
 int             writei(struct inode*, char*, uint, uint);
-
+ 
 // ide.c
 void            ideinit(void);
 void            ideintr(void);
 void            iderw(struct buf*);
-
+ 
 // ioapic.c
 void            ioapicenable(int irq, int cpu);
 extern uchar    ioapicid;
 void            ioapicinit(void);
-
+ 
 // kalloc.c
 char*           kalloc(void);
 void            kfree(char*);
 void            kinit1(void*, void*);
 void            kinit2(void*, void*);
-
+ 
 // kbd.c
 void            kbdintr(void);
-
+ 
 // lapic.c
 void            cmostime(struct rtcdate *r);
 int             cpunum(void);
@@ -79,29 +79,29 @@ void            lapiceoi(void);
 void            lapicinit(void);
 void            lapicstartap(uchar, uint);
 void            microdelay(int);
-
+ 
 // log.c
 void            initlog(int dev);
 void            log_write(struct buf*);
 void            begin_op();
 void            end_op();
-
+ 
 // mp.c
 extern int      ismp;
 int             mpbcpu(void);
 void            mpinit(void);
 void            mpstartthem(void);
-
+ 
 // picirq.c
 void            picenable(int);
 void            picinit(void);
-
+ 
 // pipe.c
 int             pipealloc(struct file**, struct file**);
 void            pipeclose(struct pipe*, int);
 int             piperead(struct pipe*, char*, int);
 int             pipewrite(struct pipe*, char*, int);
-
+ 
 //PAGEBREAK: 16
 // proc.c
 struct proc*    copyproc(struct proc*);
@@ -118,10 +118,10 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
-
+ 
 // swtch.S
 void            swtch(struct context**, struct context*);
-
+ 
 // spinlock.c
 void            acquire(struct spinlock*);
 void            getcallerpcs(void*, uint*);
@@ -130,7 +130,7 @@ void            initlock(struct spinlock*, char*);
 void            release(struct spinlock*);
 void            pushcli(void);
 void            popcli(void);
-
+ 
 // string.c
 int             memcmp(const void*, const void*, uint);
 void*           memmove(void*, const void*, uint);
@@ -139,7 +139,7 @@ char*           safestrcpy(char*, const char*, int);
 int             strlen(const char*);
 int             strncmp(const char*, const char*, uint);
 char*           strncpy(char*, const char*, int);
-
+ 
 // syscall.c
 int             argint(int, int*);
 int             argptr(int, char**, int);
@@ -147,21 +147,21 @@ int             argstr(int, char**);
 int             fetchint(uint, int*);
 int             fetchstr(uint, char**);
 void            syscall(void);
-
+ 
 // timer.c
 void            timerinit(void);
-
+ 
 // trap.c
 void            idtinit(void);
 extern uint     ticks;
 void            tvinit(void);
 extern struct spinlock tickslock;
-
+ 
 // uart.c
 void            uartinit(void);
 void            uartintr(void);
 void            uartputc(int);
-
+ 
 // vm.c
 void            seginit(void);
 void            kvmalloc(void);
@@ -178,6 +178,9 @@ void            switchuvm(struct proc*);
 void            switchkvm(void);
 int             copyout(pde_t*, uint, void*, uint);
 void            clearpteu(pde_t *pgdir, char *uva);
-
+ 
+// ne2k_driver.c
+int            ne2k_probe(int address);
+ 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
