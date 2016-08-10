@@ -48,3 +48,16 @@ A rough plan of how to proceed
 ## Adding lwip
 1. Write xv6 sys_arch.c (and cc.h etc) for lwip
 2. Write projecthif.c?
+
+## Ring buffers
+* Two ring buffers to handle packets - each made up of 256 byte pages. 
+* Packets always start on page boundaries
+* Two registers:
+  * PSTART/PSTOP define the physical boundaries of the ring buffer
+  * Whenever the DMA address reaches stop, it resets to start
+* Ring buffer is in physical continuous memory
+* Data comes into receive FIFO then moved to receive buffer when the early receive threshold is met
+* Current Page Register acts as a Write Pointer and the Boundary Pointer acts as a Read Pointer 
+* The addressable DMA space seems to be 0x4000 to 0x7fff for a NE2000 card operating in 16 bit mode but this doesn't appear to really be documented in the datasheet. It is in the datasheets for some NE2000 'clones' (http://www.davicom.com.tw/userfile/24247/DM9008-DS-F02-930914.pdf) and is widely used in driver code. 
+  * PSTART and PSTOP only have the most significant 8 bits of the 16 bit address written to so this equates to 0x40 to 0x80 (as the stop address)
+  * Seems usual to give a few pages (~6?) for the transmit buffer and to save the rest as a receive buffer

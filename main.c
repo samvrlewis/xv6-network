@@ -5,7 +5,8 @@
 #include "mmu.h"
 #include "proc.h"
 #include "x86.h"
- 
+#include "network/ne2000_driver.h"
+
 static void startothers(void);
 static void mpmain(void)  __attribute__((noreturn));
 extern pde_t *kpgdir;
@@ -35,10 +36,16 @@ main(void)
  
   int ports[] = {0x300, 0xC100, 0x240, 0x280, 0x320, 0x340, 0x360, 0xc000};
   int i;
+  adapter_t adapter;
+  memset(&adapter, 0, sizeof(adapter_t));
+
   for(i = 0; i < NELEM(ports); i++) {
       int probval = ne2k_probe(ports[i]);
-      if(probval)
+      if(probval) {
         cprintf("\n ne2k address: %x is %d ", ports[i], probval);
+        adapter.base = ports[i];
+        ne2k_init(&adapter);
+      }
   }
  
   if(!ismp)

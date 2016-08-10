@@ -166,3 +166,13 @@
 
 // SENDQ_PAGES * SENDQ_LEN ページを送信バッファとして利用する
 #define SENDQ_LEN       2
+
+
+typedef struct {
+  char name[8];
+  int irq;
+  int base;
+  uchar address[6];
+} adapter_t;
+
+int ne2k_init(adapter_t* adapter);
