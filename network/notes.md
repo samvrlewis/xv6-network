@@ -31,6 +31,7 @@
 * http://savannah.nongnu.org/projects/lwip/ - LwIP provides a TCP/IP stack, providing (among others) TCPIP, UDP, TCP, DNS, DHCP, ARP
 * http://lwip.wikia.com/wiki/LwIP_Wiki - LwIP information and guides about using the library
 * http://antoinealb.net/programming/2013/12/06/lwip-ucos2.html - Article about porting LWiP for a platform, including writing a custom sys_arch.c
+* http://www1.cs.columbia.edu/~sedwards/classes/2005/4840/ax88796.pdf  AX88796 datasheet - actually references specific register addresses and is ne2000 compatible at a register level
 
 # Steps
 A rough plan of how to proceed
@@ -61,3 +62,6 @@ A rough plan of how to proceed
 * The addressable DMA space seems to be 0x4000 to 0x7fff for a NE2000 card operating in 16 bit mode but this doesn't appear to really be documented in the datasheet. It is in the datasheets for some NE2000 'clones' (http://www.davicom.com.tw/userfile/24247/DM9008-DS-F02-930914.pdf) and is widely used in driver code. 
   * PSTART and PSTOP only have the most significant 8 bits of the 16 bit address written to so this equates to 0x40 to 0x80 (as the stop address)
   * Seems usual to give a few pages (~6?) for the transmit buffer and to save the rest as a receive buffer
+
+## DMA
+* To read from the DMA, set the 16 bit remote start address in RSAR0 and RSAR1 and a byte count into RBCR0, RBCR1. 
