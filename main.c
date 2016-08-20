@@ -44,7 +44,9 @@ main(void)
       if(probval) {
         cprintf("\n ne2k address: %x is %d ", ports[i], probval);
         adapter.base = ports[i];
+
         ne2k_init(&adapter);
+        ne2k_readmem(&adapter, 0, 16);
       }
   }
  

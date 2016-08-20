@@ -73,15 +73,46 @@ int ne2k_init(adapter_t* adapter) {
     outb(adapter->base + DP_TCR, TCR_INTERNAL);
 
     // 6) init receive buffer ring (BNDRY), Page Start (PSTART), and Page Stop (PSTOP)
-    //outb(adapter->base + DP_PSTART, 0x40);
-    //outb(adapter->base + DP_PSTOP, 0x40);
-    //outb(adapter->base + DP_BNRY, 0x40);
-    //outb(adapter->base + DP_CR, CR_PS_P0); 
-    cprintf("\n start is %d ",  inb(adapter->base + DP_CRDA0));
-    cprintf("\n start is %d ",  inb(adapter->base + DP_CRDA1));
-    cprintf("\n start is %d ",  inb(adapter->base + DP_BNRY));
+    outb(adapter->base + DP_PSTART, 0x40);
+    outb(adapter->base + DP_PSTOP, 0x80);
+    outb(adapter->base + DP_BNRY, 0x40);
+
+    // 7) clear ISR
+    outb(adapter->base + DP_ISR, 0xFF);
+
+    // 8) initialize interrupt mask register
+    outb(adapter->base + DP_IMR, IMR_PRXE);
+
+    // 9) swap command register for page 1
+    outb(adapter->base + DP_CR, CR_STP | CR_NO_DMA | CR_PS_P1);
+
+    // 9i) Init physical address registers
+    //outb(adapter->base + DP_PAR0, )
+    
     return 0;
  
+}
+
+void ne2k_readmem(adapter_t* adapter, int address, int size) {
+    outb(adapter->base + DP_CR, inb(adapter->base + DP_CR) | CR_PS_P0); 
+
+    outb(adapter->base + DP_RSAR0, address);
+    outb(adapter->base + DP_RSAR1, address >> 8);
+
+    outb(adapter->base + DP_RBCR0, size);
+    outb(adapter->base + DP_RBCR1, size >> 8);
+
+    outb(adapter->base + DP_CR, CR_PS_P0 | CR_DM_RR | CR_STA);
+
+    for (int i = 0; i < size; i++) {
+        // If we are operating in byte mode (in the DCR register)
+        // we need to read each byte that comes back twice as it is
+        // duplicated. However, if in word mode - only need to read
+        // once. There's some info on page 11 about this. '
+        
+        cprintf("%x", inb(adapter->base + 0x10));
+        cprintf("%x", inb(adapter->base + 0x10));
+    }
 }
  
 int send_data(adapter_t* adapter) {

@@ -64,4 +64,5 @@ A rough plan of how to proceed
   * Seems usual to give a few pages (~6?) for the transmit buffer and to save the rest as a receive buffer
 
 ## DMA
-* To read from the DMA, set the 16 bit remote start address in RSAR0 and RSAR1 and a byte count into RBCR0, RBCR1. 
+* To read from the DMA, set the 16 bit remote start address in RSAR0 and RSAR1 and a byte count into RBCR0, RBCR1.
+* The data port where the DMA remote read data is returned is the at 0x10 - 0x11 

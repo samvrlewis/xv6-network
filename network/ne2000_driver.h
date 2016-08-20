@@ -176,3 +176,4 @@ typedef struct {
 } adapter_t;
 
 int ne2k_init(adapter_t* adapter);
+void ne2k_readmem(adapter_t* adapter, int address, int size);
